@@ -1,4 +1,10 @@
 import random
+
+def verifyInt(arg):
+    if not arg.isnumeric():
+        return verifyInt(input("Invalid Input, Please enter an integer: "))
+    return int(arg)
+
 class Hero:
     def __init__(self, name, starting_health=100):
         self.abilities = []
@@ -140,29 +146,29 @@ class Arena:
 
     def create_ability(self):
         name = input("Create a name for this hero's ability: ")
-        damage = input("What is the maximum damage for this ability: ")
+        damage = verifyInt(input("What is the maximum damage for this ability: "))
         ability = Ability(name, damage)
         return ability
 
     def create_weapon(self):
         name = input("Create a name for this hero's weapon: ")
-        damage = input("What is the maximum damage for this weapon: ")
+        damage = verifyInt(input("What is the maximum damage for this weapon: "))
         weapon = Weapon(name, damage)
         return weapon
 
     def create_armor(self):
         name = input("Create a name for this armor piece: ")
-        block = input("What is this armor's power: ")
+        block = verifyInt(input("What is this armor's power: "))
         armor = Armor(name, block)
         return armor
 
     def create_hero(self):
         name = input("What is this hero's name: ")
-        health = input("How much health does this hero have: ")
+        health = verifyInt(input("How much health does this hero have: "))
         hero = Hero(name, health)
-        abilities = int(input("How many abilities does this hero have: "))
-        weapon = int(input("How many weapons does this hero have: "))
-        armor = int(input("How many armors does this hero have: "))
+        abilities = verifyInt(input("How many abilities does this hero have: "))
+        weapon = verifyInt(input("How many weapons does this hero have: "))
+        armor = verifyInt(input("How many armors does this hero have: "))
 
         for x in range(abilities):
             hero.add_ability(self.create_ability())
@@ -178,7 +184,7 @@ class Arena:
     def build_team_one(self):
         name = input("Choose a name for this team: ")
         self.team_one = Team(name)
-        heroes = int(input("How many heroes on this team: "))
+        heroes = verifyInt(input("How many heroes on this team: "))
 
         for x in range(heroes):
             self.team_one.add_hero(self.create_hero())
@@ -186,7 +192,7 @@ class Arena:
     def build_team_two(self):
         name = input("Choose a name for this team: ")
         self.team_two = Team(name)
-        heroes = int(input("How many heroes on this team: "))
+        heroes = verifyInt(input("How many heroes on this team: "))
 
         for x in range(heroes):
             self.team_two.add_hero(self.create_hero())
