@@ -60,10 +60,12 @@ class Hero:
             opponent.add_kill(1)
             print(self.name + " died")
             self.deaths += 1
+            return self
         elif not opponent.is_alive():
             self.add_kill(1)
             print(opponent.name + " died")
             opponent.deaths += 1
+            return opponent
 
 
 
@@ -99,17 +101,16 @@ class Team:
 
     def remove_hero(self, name):
         removed = False
-        for x in self.heroes:
-            if x.name == name:
-                self.heroes.pop(index(x))
+        for x in range(len(self.heroes)-1):
+            if self.heroes[x].name == name:
+                self.heroes.pop(x)
                 removed == True
         if not removed:
             return 0
 
     def attack(self, other_team):
          while self.healthCheck() and other_team.healthCheck():
-            self.heroes[random.randint(0, len(self.heroes)-1)].fight(other_team.heroes[random.randint(0, len(other_team.heroes)-1)])
-
+            self.remove_hero(self.heroes[random.randint(0, len(self.heroes)-1)].fight(other_team.heroes[random.randint(0, len(other_team.heroes)-1)]).name)
     def revive_heroes(self):
         for x in self.heroes:
             x.current_health = x.starting_health
@@ -120,7 +121,7 @@ class Team:
         for x in self.heroes:
             totalDeaths += x.deaths
             totalKills += x.kills
-        if(x.deaths > 0):
+        if(self.healthCheck() <= 0):
             print ("{}: {}".format(self.name, (totalKills/totalDeaths)))
         else:
             print ("{}: {}".format(self.name, float(totalKills)))
