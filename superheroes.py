@@ -50,7 +50,6 @@ class Hero:
             return True
         elif int(self.current_health) <= 0:
             self.current_health = 0
-            print(self.name + " died")
             return False
 
     def fight(self, opponent):
@@ -59,8 +58,12 @@ class Hero:
             opponent.take_damage(self.attack())
         if not self.is_alive():
             opponent.add_kill(1)
+            print(self.name + " died")
+            self.deaths += 1
         elif not opponent.is_alive():
             self.add_kill(1)
+            print(opponent.name + " died")
+            opponent.deaths += 1
 
 
 
@@ -112,17 +115,18 @@ class Team:
             x.current_health = x.starting_health
 
     def stats(self):
+        totalDeaths = 0
+        totalKills = 0
         for x in self.heroes:
-            if(x.deaths > 0):
-                print ("{}: {}".format(self.name, (x.kills/x.deaths)))
-            else:
-                print ("{}: {}".format(self.name, x.kills))
+            totalDeaths += x.deaths
+            totalKills += x.kills
+        if(x.deaths > 0):
+            print ("{}: {}".format(self.name, (totalKills/totalDeaths)))
+        else:
+            print ("{}: {}".format(self.name, float(totalKills)))
 
     def view_all_heroes(self):
-        output = list()
-        for x in self.heroes:
-            output.append(x.name)
-        print(output)
+        print(self.heroes)
 
 
 
@@ -218,8 +222,21 @@ class Arena:
         self.team_two.stats()
 
 if __name__ == "__main__":
+    game_is_running = True
     arena = Arena()
     arena.build_team_one()
     arena.build_team_two()
-    arena.team_battle()
-    arena.show_stats()
+
+    while game_is_running:
+        arena.team_battle()
+        arena.show_stats()
+        play_again = input("Play Again? Y or N: ")
+
+        if play_again.lower() == "n":
+            game_is_running = False
+        elif play_again.lower() == "y":
+            arena.team_one.revive_heroes()
+            arena.team_two.revive_heroes()
+        else:
+            print("Invalid Input, terminating")
+            game_is_running = False
