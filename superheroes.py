@@ -101,9 +101,9 @@ class Team:
 
     def remove_hero(self, name):
         removed = False
-        for x in range(len(self.heroes)-1):
-            if self.heroes[x].name == name:
-                self.heroes.pop(x)
+        for x in self.heroes:
+            if x.name == name:
+                self.heroes.pop(self.heroes.index(x))
                 removed == True
         if not removed:
             return 0
@@ -127,7 +127,10 @@ class Team:
             print ("{}: {}".format(self.name, float(totalKills)))
 
     def view_all_heroes(self):
-        print(self.heroes)
+        output = ""
+        for x in self.heroes:
+            output += x.name + " "
+        print(output)
 
 
 
