@@ -84,11 +84,11 @@ class Weapon(Ability):
         return random.randint(int(self.max_damage)/2, int(self.max_damage))
 
 
-
 class Team:
     def __init__(self, team_name):
         self.name = team_name
         self.heroes = list()
+        self.copy = list()
 
     def healthCheck(self):
         total = 0
@@ -98,6 +98,7 @@ class Team:
 
     def add_hero(self, Hero):
         self.heroes.append(Hero)
+        self.copy.append(Hero)
 
     def remove_hero(self, name):
         removed = False
@@ -108,12 +109,30 @@ class Team:
         if not removed:
             return 0
 
-    def attack(self, other_team):
-         while self.healthCheck() and other_team.healthCheck():
-            self.remove_hero(self.heroes[random.randint(0, len(self.heroes)-1)].fight(other_team.heroes[random.randint(0, len(other_team.heroes)-1)]).name)
-    def revive_heroes(self):
+    def find_hero(self, hero):
         for x in self.heroes:
+            if x == hero:
+                return True
+        return False
+
+    def attack(self, other_team):
+         while self.healthCheck() > 0 and other_team.healthCheck() > 0:
+            other_hero = other_team.heroes[random.randint(0, len(other_team.heroes)-1)]
+            main_hero = self.heroes[random.randint(0, len(self.heroes)-1)]
+            loser = main_hero.fight(other_hero)
+            if self.find_hero(loser):
+                self.remove_hero(loser.name)
+            elif other_team.find_hero(loser):
+                other_team.remove_hero(loser.name)
+
+    def revive_heroes(self):
+        if len(self.heroes) > 0:
+            for x in range(len(self.heroes)):
+                self.heroes.pop(x)
+        for x in self.copy:
             x.current_health = x.starting_health
+            self.heroes.append(x)
+
 
     def stats(self):
         totalDeaths = 0
@@ -121,7 +140,7 @@ class Team:
         for x in self.heroes:
             totalDeaths += x.deaths
             totalKills += x.kills
-        if(self.healthCheck() <= 0):
+        if(totalDeaths > 0):
             print ("{}: {}".format(self.name, (totalKills/totalDeaths)))
         else:
             print ("{}: {}".format(self.name, float(totalKills)))
